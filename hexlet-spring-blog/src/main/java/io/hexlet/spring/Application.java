@@ -7,13 +7,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-public class HomeController {
+public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(HomeController.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
     @GetMapping("/")
     public String home() {
         return "Добро пожаловать в Hexlet Spring Blog!";
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "This is simple Spring blog!";
     }
 }
