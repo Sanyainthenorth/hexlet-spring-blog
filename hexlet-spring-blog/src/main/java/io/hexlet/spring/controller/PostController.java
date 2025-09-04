@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,24 +24,25 @@ import io.hexlet.spring.model.Post;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/api/posts")
 public class PostController {
 
     private List<Post> posts = new ArrayList<Post>();
 
-    @GetMapping("/posts") // Список постов 200
+    @GetMapping // Список постов 200
     public ResponseEntity<List<Post>> index(@RequestParam(defaultValue = "10") Integer limit) {
         return ResponseEntity.ok()
                              .body(posts.stream().limit(limit).toList());
     }
 
-    @PostMapping("/posts") // Создание поста 201
+    @PostMapping // Создание поста 201
     public ResponseEntity<Post> create(@Valid @RequestBody Post post) {
         posts.add(post);
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(post);
     }
 
-    @GetMapping("/posts/{id}") // Получение одного поста 200/404
+    @GetMapping("/{id}") // Получение одного поста 200/404
     public ResponseEntity<Post> show(@PathVariable String id) {
         Optional<Post> post = posts.stream()
                                    .filter(p -> p.getSlug().equals(id))
@@ -50,7 +52,7 @@ public class PostController {
                    .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/posts/{id}") /// обновление 200/404
+    @PutMapping("/{id}") // обновление 200/404
     public ResponseEntity<Post> update(@PathVariable String id, @Valid @RequestBody Post data) {
         Optional<Post> maybePost = posts.stream()
                                         .filter(p -> p.getSlug().equals(id))
@@ -68,7 +70,7 @@ public class PostController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/posts/{id}") // Удаление страницы 204/404
+    @DeleteMapping("/{id}") // Удаление страницы 204/404
     public ResponseEntity<Void> destroy(@PathVariable String id) {
         boolean removed = posts.removeIf(p -> p.getSlug().equals(id));
 
