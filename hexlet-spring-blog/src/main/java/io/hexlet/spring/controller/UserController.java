@@ -1,14 +1,11 @@
 package io.hexlet.spring.controller;
-
-import io.hexlet.spring.model.Post;
+import io.hexlet.spring.exception.ResourceNotFoundException;
 import io.hexlet.spring.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,18 +30,22 @@ public class UserController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User savedUser = userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                             .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+    public User updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User with id " + id + " not found");
+        }
         user.setId(id);
         return userRepository.save(user);
     }
@@ -52,6 +53,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User with id " + id + " not found");
+        }
         userRepository.deleteById(id);
     }
 }
