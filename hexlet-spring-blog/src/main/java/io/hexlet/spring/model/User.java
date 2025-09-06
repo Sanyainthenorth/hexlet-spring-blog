@@ -1,18 +1,28 @@
 package io.hexlet.spring.model;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+@Entity
+@Table(name = "users")
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name cannot be empty")
-    private String name;
-
-    @NotBlank(message = "Email cannot be empty")
     private String email;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthday;
 }

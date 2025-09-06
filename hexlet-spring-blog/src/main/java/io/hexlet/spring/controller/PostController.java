@@ -1,94 +1,53 @@
 package io.hexlet.spring.controller;
 
+import io.hexlet.spring.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import io.hexlet.spring.model.Post;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 
-    private List<Post> posts = new ArrayList<Post>();
+    @Autowired
+    private PostRepository postRepository;
 
-    @GetMapping // Список постов 200
-    public ResponseEntity<List<Post>> index(@RequestParam(defaultValue = "10") Integer limit) {
-        return ResponseEntity.ok()
-                             .body(posts.stream().limit(limit).toList());
+    @GetMapping
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
     }
 
-    @PostMapping // Создание поста 201
-    public ResponseEntity<Post> create(@Valid @RequestBody Post post) {
-        posts.add(post);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(post);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Post createPost(@RequestBody Post post) {
+        return postRepository.save(post);
     }
 
-    @GetMapping("/{id}") // Получение одного поста 200/404
-    public ResponseEntity<Post> show(@PathVariable String id) {
-        Optional<Post> post = posts.stream()
-                                   .filter(p -> p.getSlug().equals(id))
-                                   .findFirst();
-
-        return post.map(ResponseEntity::ok)
-                   .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{id}")
+    public Post getPost(@PathVariable Long id) {
+        return postRepository.findById(id).orElse(null);
     }
 
-    @PutMapping("/{id}") // обновление 200/404
-    public ResponseEntity<Post> update(@PathVariable String id, @Valid @RequestBody Post data) {
-        Optional<Post> maybePost = posts.stream()
-                                        .filter(p -> p.getSlug().equals(id))
-                                        .findFirst();
-
-        if (maybePost.isPresent()) {
-            Post post = maybePost.get();
-            post.setSlug(data.getSlug());
-            post.setTitle(data.getTitle());
-            post.setContent(data.getContent());
-            post.setAuthor(data.getAuthor());
-            return ResponseEntity.ok(post);
-        }
-
-        return ResponseEntity.notFound().build();
+    @PutMapping("/{id}")
+    public Post updatePost(@PathVariable Long id, @RequestBody Post post) {
+        post.setId(id);
+        return postRepository.save(post);
     }
 
-    @DeleteMapping("/{id}") // Удаление страницы 204/404
-    public ResponseEntity<Void> destroy(@PathVariable String id) {
-        boolean removed = posts.removeIf(p -> p.getSlug().equals(id));
-
-        if (removed) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.notFound().build();
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePost(@PathVariable Long id) {
+        postRepository.deleteById(id);
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
-        MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                                                           errors.put(error.getField(), error.getDefaultMessage())
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
-
 }

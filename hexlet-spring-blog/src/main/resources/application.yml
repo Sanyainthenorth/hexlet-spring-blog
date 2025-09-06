@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+output:
+  ansi:
+  enabled: always    # цветной вывод логотипа
+logging:
+  pattern:
+    dateformat: "yyyy-MM-dd HH:mm:ss"  # кастомный формат даты в логах
+
+app:
+  welcome-message: "Welcome to Spring blog!"  # наше кастомное сообщение

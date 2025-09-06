@@ -1,23 +1,26 @@
 package io.hexlet.spring.model;
 
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
 
+@Entity
 @NoArgsConstructor
 @Setter
 @Getter
 public class Post {
-    private String slug;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotBlank(message = "Title cannot be empty") // Валидация: не может быть пустым
     private String title;
-
-    @NotBlank(message = "Title cannot be empty") // Валидация: не может быть пустым
     private String content;
-
-    private String author;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private boolean published;
 }
