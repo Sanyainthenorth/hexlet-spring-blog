@@ -57,8 +57,9 @@ public class PostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@PathVariable Long id) {
         if (!postRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User with id " + id + " not found");
+            throw new ResourceNotFoundException("Post with id " + id + " not found");
         }
         postRepository.deleteById(id);
     }
+
 }
