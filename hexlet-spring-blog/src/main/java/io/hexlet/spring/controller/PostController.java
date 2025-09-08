@@ -4,6 +4,9 @@ import io.hexlet.spring.exception.ResourceNotFoundException;
 import io.hexlet.spring.repository.PostRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,11 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import io.hexlet.spring.model.Post;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -27,8 +31,11 @@ public class PostController {
     private PostRepository postRepository;
 
     @GetMapping
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public Page<Post> getPublishedPosts(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return postRepository.findByPublishedTrue(pageable);
     }
 
     @PostMapping
@@ -45,11 +52,13 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(@PathVariable Long id, @Valid @RequestBody Post post) {
-        if (!postRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Post with id " + id + " not found");
-        }
-        post.setId(id);
+    public Post updatePost(@PathVariable Long id, @Valid @RequestBody Post postData) {
+        Post post = postRepository.findById(id)
+                                  .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
+
+        post.setTitle(postData.getTitle());
+        post.setContent(postData.getContent());
+
         return postRepository.save(post);
     }
 
@@ -60,6 +69,17 @@ public class PostController {
             throw new ResourceNotFoundException("Post with id " + id + " not found");
         }
         postRepository.deleteById(id);
+    }
+    @GetMapping("/published")
+    public Page<Post> getPublishedPosts(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
+
+        Sort.Direction direction = sort[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort[0]));
+
+        return postRepository.findByPublishedTrue(pageable);
     }
 
 }
