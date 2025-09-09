@@ -21,7 +21,7 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
+    implementation("net.datafaker:datafaker:1.9.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
