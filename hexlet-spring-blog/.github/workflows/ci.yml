@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: "21"
+    - name: Cache Gradle
+      uses: gradle/actions/setup-gradle@v3
+    - name: Build & Test
+      run: ./gradlew clean build test
+    - name: Generate Coverage Report
+      run: ./gradlew jacocoTestReport
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report
+        path: build/reports/jacoco/test/html/
