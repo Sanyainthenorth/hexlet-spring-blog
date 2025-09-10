@@ -1,7 +1,9 @@
 package io.hexlet.spring.controller;
 
 import io.hexlet.spring.exception.ResourceNotFoundException;
+import io.hexlet.spring.model.User;
 import io.hexlet.spring.repository.PostRepository;
+import io.hexlet.spring.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,9 @@ public class PostController {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping
     public Page<Post> getPublishedPosts(
         @RequestParam(defaultValue = "0") int page,
@@ -40,7 +45,10 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Post> createPost(@Valid @RequestBody Post post) {
+    public ResponseEntity<Post> createPost(@Valid @RequestBody Post post, @RequestParam Long userId) {
+        User user = userRepository.findById(userId)
+                                  .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
+        post.setUser(user);
         Post savedPost = postRepository.save(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }

@@ -32,6 +32,7 @@ dependencies {
 // Понадобится когда мы начнем работать с аутентификацией
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
+    testImplementation ("com.jayway.jsonpath:json-path:2.7.0")
 
 }
 sonarqube {
