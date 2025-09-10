@@ -1,7 +1,7 @@
 # Spring Boot Application
 
-![CI](https://github.com/your-username/your-repo/actions/workflows/ci.yml/badge.svg)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=your-project-key&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=your-project-key)
+![CI](https://github.com/Sanyainthenorth/hexlet-spring-blog/actions/workflows/ci.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Sanyainthenorth_hexlet-spring-blog&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Sanyainthenorth_hexlet-spring-blog)
 
 ## API Endpoints
 
