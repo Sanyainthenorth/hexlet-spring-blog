@@ -78,16 +78,5 @@ public class PostController {
         }
         postRepository.deleteById(id);
     }
-    @GetMapping("/published")
-    public Page<Post> getPublishedPosts(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
-
-        Sort.Direction direction = sort[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sort[0]));
-
-        return postRepository.findByPublishedTrue(pageable);
-    }
 
 }

@@ -44,6 +44,10 @@ sonarqube {
         property("sonar.junit.reportPaths", "build/test-results/test")
         property("sonar.jacoco.reportPaths", "build/jacoco/test.exec")
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.java.binaries", "build/classes/java/main")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.sourceEncoding", "UTF-8")
     }
 }
 
