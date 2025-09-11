@@ -4,7 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.3"
     id("io.freefair.lombok") version "8.13.1"
     jacoco
-    id("org.sonarqube") version "4.4.1.3373"
+    id("org.sonarqube") version "5.0.0.4638"
 }
 
 group = "io.hexlet"
@@ -37,6 +37,7 @@ dependencies {
 }
 sonarqube {
     properties {
+        property ("sonar.gradle.skipCompile", "true")
         property("sonar.projectKey", "Sanyainthenorth_hexlet-spring-blog")
         property("sonar.organization", "sanyainthenorth")
         property("sonar.host.url", "https://sonarcloud.io") // или ваш SonarQube

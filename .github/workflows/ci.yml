@@ -39,7 +39,7 @@ jobs:
         name: jacoco-report
         path: build/reports/jacoco/test/html/
 
-    - name: SonarCloud Scan
+    - name: Run SonarQube Analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew sonarqube
+      run: ./gradlew sonarqube --warning-mode=none
