@@ -2,6 +2,7 @@ package io.hexlet.spring.controller;
 
 import io.hexlet.spring.dto.PostCreateDTO;
 import io.hexlet.spring.dto.PostDTO;
+import io.hexlet.spring.dto.PostUpdateDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
 import io.hexlet.spring.mapper.PostMapper;
 import io.hexlet.spring.model.Post;
@@ -56,14 +57,10 @@ public class PostController {
         User user = userRepository.findById(userId)
                                   .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
 
-        // Преобразуем DTO в Entity
-        Post post = new Post();
-        post.setTitle(postCreateDTO.getTitle());
-        post.setContent(postCreateDTO.getContent());
-        post.setPublished(true); // Устанавливаем на сервере
+        Post post = postMapper.toEntity(postCreateDTO);
+        post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(LocalDateTime.now());
-        post.setUser(user);
 
         Post savedPost = postRepository.save(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(postMapper.toDTO(savedPost));
@@ -72,23 +69,20 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable Long id) {
         return postRepository.findById(id)
-                             .map(post -> ResponseEntity.ok(postMapper.toDTO(post))) // Исправлено здесь
+                             .map(post -> ResponseEntity.ok(postMapper.toDTO(post)))
                              .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PostDTO> updatePost(
         @PathVariable Long id,
-        @Valid @RequestBody PostCreateDTO postCreateDTO) {
+        @Valid @RequestBody PostUpdateDTO postUpdateDTO) {
 
         Post post = postRepository.findById(id)
                                   .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
 
-        // Обновляем только те поля, которые есть в DTO
-        post.setTitle(postCreateDTO.getTitle());
-        post.setContent(postCreateDTO.getContent());
+        postMapper.updateEntityFromDTO(postUpdateDTO, post);
         post.setUpdatedAt(LocalDateTime.now());
-        // published не обновляем из DTO, так как его нет в PostCreateDTO
 
         Post updatedPost = postRepository.save(post);
         return ResponseEntity.ok(postMapper.toDTO(updatedPost));

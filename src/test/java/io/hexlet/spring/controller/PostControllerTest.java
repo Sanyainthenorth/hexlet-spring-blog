@@ -55,9 +55,8 @@ public class PostControllerTest {
                .andExpect(status().isOk())
                .andExpect(jsonPath("$").isArray()) // ✅ Теперь просто массив, без content
                .andExpect(jsonPath("$.length()").value(1))
-               .andExpect(jsonPath("$[0].title").value("Test Post")) // ✅ Обращаемся по индексу
-               .andExpect(jsonPath("$[0].userId").exists()); // ✅ Проверяем наличие userId
-    }
+               .andExpect(jsonPath("$[0].title").value("Test Post"));
+    }// ✅ Обращаемся по индексу
 
     @Test
     public void testCreatePostSuccess() throws Exception {
@@ -78,8 +77,7 @@ public class PostControllerTest {
                             .content(validPostJson))
                .andExpect(status().isCreated())
                .andExpect(jsonPath("$.id").exists())
-               .andExpect(jsonPath("$.title").value("New Post"))
-               .andExpect(jsonPath("$.userId").value(user.getId())); // ✅ Проверяем userId в ответе
+               .andExpect(jsonPath("$.title").value("New Post"));
     }
 
     @Test

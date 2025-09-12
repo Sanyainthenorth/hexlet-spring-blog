@@ -5,6 +5,7 @@ plugins {
     id("io.freefair.lombok") version "8.13.1"
     jacoco
     id("org.sonarqube") version "5.0.0.4638"
+    kotlin("kapt") version "1.9.25"
 }
 
 group = "io.hexlet"
@@ -25,6 +26,8 @@ dependencies {
     implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
     implementation("net.datafaker:datafaker:2.0.1")
     implementation("org.instancio:instancio-junit:3.3.0")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
@@ -33,6 +36,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
     testImplementation ("com.jayway.jsonpath:json-path:2.7.0")
+    testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
 }
 sonarqube {
