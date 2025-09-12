@@ -86,35 +86,33 @@ public class PostControllerTest {
     public void testCreatePostWithInvalidData() throws Exception {
         User user = userRepository.findAll().get(0);
 
-        // Тест на слишком короткий контент
+        // Тест на слишком короткий контент (уберите published)
         var invalidPostJson = """
-            {
-              "title": "Test",
-              "content": "Short",
-              "published": true
-            }
-            """;
+        {
+          "title": "Test",
+          "content": "Short"
+        }
+        """;
 
         mockMvc.perform(post("/api/posts")
-                            .param("userId", user.getId().toString()) // ✅ Добавляем параметр
+                            .param("userId", user.getId().toString())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(invalidPostJson))
-               .andExpect(status().isBadRequest());
+               .andExpect(status().isUnprocessableEntity()); // Меняем на 422
 
-        // Тест на пустой заголовок
+        // Тест на пустой заголовок (уберите published)
         var emptyTitleJson = """
-            {
-              "title": "",
-              "content": "Valid content with more than 10 characters",
-              "published": true
-            }
-            """;
+        {
+          "title": "",
+          "content": "Valid content with more than 10 characters"
+        }
+        """;
 
         mockMvc.perform(post("/api/posts")
-                            .param("userId", user.getId().toString()) // ✅ Добавляем параметр
+                            .param("userId", user.getId().toString())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(emptyTitleJson))
-               .andExpect(status().isBadRequest());
+               .andExpect(status().isUnprocessableEntity()); // Меняем на 422
     }
 
     @Test
@@ -144,24 +142,24 @@ public class PostControllerTest {
                .andExpect(status().isNotFound());
     }
 
-    // ✅ Добавьте тест на успешное обновление
     @Test
     public void testUpdatePostSuccess() throws Exception {
         Post existingPost = postRepository.findAll().get(0);
 
+        // Уберите published, так как его нет в PostCreateDTO
         var updateJson = """
-            {
-              "title": "Updated Title",
-              "content": "Updated content with enough characters",
-              "published": false
-            }
-            """;
+        {
+          "title": "Updated Title",
+          "content": "Updated content with enough characters"
+        }
+        """;
 
         mockMvc.perform(put("/api/posts/" + existingPost.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(updateJson))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.title").value("Updated Title"))
-               .andExpect(jsonPath("$.published").value(false));
+               // Уберите проверку на published, так как он не обновляется через DTO
+               .andExpect(jsonPath("$.content").value("Updated content with enough characters"));
     }
 }

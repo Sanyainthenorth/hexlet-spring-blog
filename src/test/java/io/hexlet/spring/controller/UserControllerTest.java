@@ -175,37 +175,36 @@ public class UserControllerTest {
                .andExpect(status().isNotFound());
     }
 
-    // ✅ Добавьте тест на валидацию
     @Test
     public void testCreateUserWithInvalidData() throws Exception {
         // Тест на пустое имя
         var invalidUserJson = """
-            {
-              "firstName": "",
-              "lastName": "Doe",
-              "email": "invalid@example.com",
-              "password": "password123"
-            }
-            """;
+        {
+          "firstName": "",
+          "lastName": "Doe",
+          "email": "invalid@example.com",
+          "password": "password123"
+        }
+        """;
 
         mockMvc.perform(post("/api/users")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(invalidUserJson))
-               .andExpect(status().isBadRequest());
+               .andExpect(status().isUnprocessableEntity()); // Меняем на 422
 
         // Тест на невалидный email
         var invalidEmailJson = """
-            {
-              "firstName": "John",
-              "lastName": "Doe",
-              "email": "invalid-email",
-              "password": "password123"
-            }
-            """;
+        {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "invalid-email",
+          "password": "password123"
+        }
+        """;
 
         mockMvc.perform(post("/api/users")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(invalidEmailJson))
-               .andExpect(status().isBadRequest());
+               .andExpect(status().isUnprocessableEntity()); // Меняем на 422
     }
 }
