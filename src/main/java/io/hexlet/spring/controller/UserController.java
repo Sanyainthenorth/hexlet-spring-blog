@@ -1,6 +1,7 @@
 package io.hexlet.spring.controller;
 
 import io.hexlet.spring.dto.UserCreateDTO;
+import io.hexlet.spring.dto.UserPatchDTO;
 import io.hexlet.spring.dto.UserUpdateDTO;
 import io.hexlet.spring.dto.UserDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,18 +56,21 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(
-        @PathVariable Long id,
-        @Valid @RequestBody UserUpdateDTO userUpdateDTO) {
+    public UserDTO update(@RequestBody @Valid UserUpdateDTO userData, @PathVariable Long id) {
+        var user = userRepository.findById(id)
+                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        userMapper.update(userData, user);
+        userRepository.save(user);
+        return userMapper.toDTO(user);
+    }
 
-        User user = userRepository.findById(id)
-                                  .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-
-        userMapper.updateEntityFromDTO(userUpdateDTO, user);
-        user.setUpdatedAt(LocalDateTime.now());
-
-        User updatedUser = userRepository.save(user);
-        return ResponseEntity.ok(userMapper.toDTO(updatedUser));
+    @PatchMapping("/{id}")
+    public UserDTO patch(@RequestBody @Valid UserPatchDTO userData, @PathVariable Long id) {
+        var user = userRepository.findById(id)
+                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        userMapper.patch(userData, user);
+        userRepository.save(user);
+        return userMapper.toDTO(user);
     }
 
     @DeleteMapping("/{id}")

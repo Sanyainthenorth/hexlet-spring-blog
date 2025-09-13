@@ -6,6 +6,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,14 +36,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Email should be valid")
+    @NotBlank
+    @Email
     private String email;
 
-    @NotBlank(message = "First name cannot be empty")
+    @NotBlank
+    @Size(min = 2, max = 50)
     private String firstName;
 
-    @NotBlank(message = "Last name cannot be empty")
+    @NotBlank
+    @Size(min = 2, max = 50)
     private String lastName;
 
     private LocalDate birthday;

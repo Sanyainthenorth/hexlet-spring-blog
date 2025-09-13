@@ -28,6 +28,7 @@ dependencies {
     implementation("org.instancio:instancio-junit:3.3.0")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))

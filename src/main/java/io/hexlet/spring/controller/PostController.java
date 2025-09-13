@@ -2,6 +2,7 @@ package io.hexlet.spring.controller;
 
 import io.hexlet.spring.dto.PostCreateDTO;
 import io.hexlet.spring.dto.PostDTO;
+import io.hexlet.spring.dto.PostPatchDTO;
 import io.hexlet.spring.dto.PostUpdateDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
 import io.hexlet.spring.mapper.PostMapper;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,18 +76,21 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDTO> updatePost(
-        @PathVariable Long id,
-        @Valid @RequestBody PostUpdateDTO postUpdateDTO) {
+    public PostDTO update(@RequestBody @Valid PostUpdateDTO postData, @PathVariable Long id) {
+        var post = postRepository.findById(id)
+                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        postMapper.update(postData, post);
+        postRepository.save(post);
+        return postMapper.toDTO(post);
+    }
 
-        Post post = postRepository.findById(id)
-                                  .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
-
-        postMapper.updateEntityFromDTO(postUpdateDTO, post);
-        post.setUpdatedAt(LocalDateTime.now());
-
-        Post updatedPost = postRepository.save(post);
-        return ResponseEntity.ok(postMapper.toDTO(updatedPost));
+    @PatchMapping("/{id}")
+    public PostDTO patch(@RequestBody @Valid PostPatchDTO postData, @PathVariable Long id) {
+        var post = postRepository.findById(id)
+                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        postMapper.patch(postData, post);
+        postRepository.save(post);
+        return postMapper.toDTO(post);
     }
 
     @DeleteMapping("/{id}")
