@@ -6,13 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2c8b7163-ca71-496c-afb7-728e2c7dbb6b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/controller/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/UserCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/UserCreateDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/mapper/PostMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/mapper/PostMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/model/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

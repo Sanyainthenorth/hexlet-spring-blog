@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,6 +37,7 @@ public class PostController {
     private PostMapper postMapper;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<PostDTO> getPublishedPosts(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size) {
@@ -52,12 +52,9 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PostDTO> createPost(
-        @Valid @RequestBody PostCreateDTO postCreateDTO,
-        @RequestParam Long userId) {
-
-        User user = userRepository.findById(userId)
-                                  .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
+    public PostDTO createPost(@Valid @RequestBody PostCreateDTO postCreateDTO) {
+        User user = userRepository.findById(postCreateDTO.getUserId())
+                                  .orElseThrow(() -> new ResourceNotFoundException("User with id " + postCreateDTO.getUserId() + " not found"));
 
         Post post = postMapper.toEntity(postCreateDTO);
         post.setUser(user);
@@ -65,32 +62,41 @@ public class PostController {
         post.setUpdatedAt(LocalDateTime.now());
 
         Post savedPost = postRepository.save(post);
-        return ResponseEntity.status(HttpStatus.CREATED).body(postMapper.toDTO(savedPost));
+        return postMapper.toDTO(savedPost);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDTO> getPost(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public PostDTO getPost(@PathVariable Long id) {
         return postRepository.findById(id)
-                             .map(post -> ResponseEntity.ok(postMapper.toDTO(post)))
+                             .map(postMapper::toDTO)
                              .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
     }
 
     @PutMapping("/{id}")
-    public PostDTO update(@RequestBody @Valid PostUpdateDTO postData, @PathVariable Long id) {
-        var post = postRepository.findById(id)
-                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public PostDTO updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateDTO postData) {
+        Post post = postRepository.findById(id)
+                                  .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
+
         postMapper.update(postData, post);
-        postRepository.save(post);
-        return postMapper.toDTO(post);
+        post.setUpdatedAt(LocalDateTime.now());
+
+        Post updatedPost = postRepository.save(post);
+        return postMapper.toDTO(updatedPost);
     }
 
     @PatchMapping("/{id}")
-    public PostDTO patch(@RequestBody @Valid PostPatchDTO postData, @PathVariable Long id) {
-        var post = postRepository.findById(id)
-                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public PostDTO patchPost(@PathVariable Long id, @Valid @RequestBody PostPatchDTO postData) {
+        Post post = postRepository.findById(id)
+                                  .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
+
         postMapper.patch(postData, post);
-        postRepository.save(post);
-        return postMapper.toDTO(post);
+        post.setUpdatedAt(LocalDateTime.now());
+
+        Post patchedPost = postRepository.save(post);
+        return postMapper.toDTO(patchedPost);
     }
 
     @DeleteMapping("/{id}")
@@ -101,4 +107,17 @@ public class PostController {
         }
         postRepository.deleteById(id);
     }
+
+    @GetMapping("/user/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PostDTO> getPostsByUser(@PathVariable Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User with id " + userId + " not found");
+        }
+
+        return postRepository.findByUserId(userId).stream()
+                             .map(postMapper::toDTO)
+                             .collect(Collectors.toList());
+    }
 }
+

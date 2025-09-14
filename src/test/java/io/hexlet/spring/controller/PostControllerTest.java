@@ -63,21 +63,21 @@ public class PostControllerTest {
         User user = userRepository.findAll().get(0);
 
         var validPostJson = """
-            {
-              "title": "New Post",
-              "content": "This is a valid post content with more than 10 characters",
-              "published": true
-            }
-            """;
+        {
+          "title": "New Post",
+          "content": "This is a valid post content with more than 10 characters",
+          "published": true,
+          "userId": %d
+        }
+        """.formatted(user.getId());
 
-        // ✅ Передаем userId как параметр запроса, а не в JSON
         mockMvc.perform(post("/api/posts")
-                            .param("userId", user.getId().toString()) // ✅ Ключевое изменение!
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(validPostJson))
                .andExpect(status().isCreated())
                .andExpect(jsonPath("$.id").exists())
-               .andExpect(jsonPath("$.title").value("New Post"));
+               .andExpect(jsonPath("$.title").value("New Post"))
+               .andExpect(jsonPath("$.userId").value(user.getId()));
     }
 
     @Test

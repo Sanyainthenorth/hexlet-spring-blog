@@ -11,7 +11,6 @@ import io.hexlet.spring.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,6 +29,7 @@ public class UserController {
     private UserMapper userMapper;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll()
                              .stream()
@@ -38,39 +38,48 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO getUser(@PathVariable Long id) {
         return userRepository.findById(id)
-                             .map(user -> ResponseEntity.ok(userMapper.toDTO(user)))
+                             .map(userMapper::toDTO)
                              .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         User user = userMapper.toEntity(userCreateDTO);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(userMapper.toDTO(savedUser));
+        return userMapper.toDTO(savedUser);
     }
 
     @PutMapping("/{id}")
-    public UserDTO update(@RequestBody @Valid UserUpdateDTO userData, @PathVariable Long id) {
-        var user = userRepository.findById(id)
-                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO userData) {
+        User user = userRepository.findById(id)
+                                  .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+
         userMapper.update(userData, user);
-        userRepository.save(user);
-        return userMapper.toDTO(user);
+        user.setUpdatedAt(LocalDateTime.now()); // Добавляем обновление времени
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDTO(updatedUser);
     }
 
     @PatchMapping("/{id}")
-    public UserDTO patch(@RequestBody @Valid UserPatchDTO userData, @PathVariable Long id) {
-        var user = userRepository.findById(id)
-                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO patchUser(@PathVariable Long id, @Valid @RequestBody UserPatchDTO userData) {
+        User user = userRepository.findById(id)
+                                  .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+
         userMapper.patch(userData, user);
-        userRepository.save(user);
-        return userMapper.toDTO(user);
+        user.setUpdatedAt(LocalDateTime.now()); // Добавляем обновление времени
+
+        User patchedUser = userRepository.save(user);
+        return userMapper.toDTO(patchedUser);
     }
 
     @DeleteMapping("/{id}")
@@ -82,3 +91,4 @@ public class UserController {
         userRepository.deleteById(id);
     }
 }
+

@@ -207,4 +207,74 @@ public class UserControllerTest {
                             .content(invalidEmailJson))
                .andExpect(status().isUnprocessableEntity()); // Меняем на 422
     }
+    @Test
+    public void testGetNonExistentUser() throws Exception {
+        mockMvc.perform(get("/api/users/9999"))
+               .andExpect(status().isNotFound());
+    }
+    @Test
+    public void testUpdateNonExistentUser() throws Exception {
+        var updateJson = """
+        {
+          "firstName": "Test",
+          "lastName": "User",
+          "email": "test@example.com",
+          "password": "password123"
+        }
+        """;
+
+        mockMvc.perform(put("/api/users/9999")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(updateJson))
+               .andExpect(status().isNotFound());
+    }
+    @Test
+    public void testDeleteNonExistentUser() throws Exception {
+        mockMvc.perform(delete("/api/users/9999"))
+               .andExpect(status().isNotFound());
+    }
+    @Test
+    public void testPatchUser() throws Exception {
+        // Создаем пользователя
+        var userJson = """
+        {
+          "firstName": "Mike",
+          "lastName": "Smith",
+          "email": "mike@example.com",
+          "password": "password123"
+        }
+        """;
+
+        var result = mockMvc.perform(post("/api/users")
+                                         .contentType(MediaType.APPLICATION_JSON)
+                                         .content(userJson))
+                            .andExpect(status().isCreated())
+                            .andReturn();
+
+        var responseBody = result.getResponse().getContentAsString();
+        var id = JsonPath.read(responseBody, "$.id").toString();
+
+        // Частично обновляем только имя
+        var patchJson = """
+        {
+          "firstName": "Michael"
+        }
+        """;
+
+        mockMvc.perform(patch("/api/users/" + id)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(patchJson))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.firstName").value("Michael"))
+               .andExpect(jsonPath("$.lastName").value("Smith")) // Осталось прежним
+               .andExpect(jsonPath("$.email").value("mike@example.com"));
+    }
+
+    @Test
+    public void testGetEmptyUsersList() throws Exception {
+        mockMvc.perform(get("/api/users"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$").isArray())
+               .andExpect(jsonPath("$.length()").value(0));
+    }
 }
