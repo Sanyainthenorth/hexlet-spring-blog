@@ -1,21 +1,21 @@
 package io.hexlet.spring.dto;
 
 import jakarta.validation.constraints.Size;
-
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.openapitools.jackson.nullable.JsonNullable;
+import java.util.List;
 
 @Getter
 @Setter
 public class PostUpdateDTO {
-
-    @NotBlank
     @Size(min = 3, max = 100)
-    private String title;
+    private JsonNullable<String> title = JsonNullable.undefined();
 
-    @NotBlank
     @Size(min = 10)
-    private String content;
+    private JsonNullable<String> content = JsonNullable.undefined();
 
+    private JsonNullable<Boolean> published = JsonNullable.undefined();
+
+    private JsonNullable<List<Long>> tagIds = JsonNullable.undefined();
 }

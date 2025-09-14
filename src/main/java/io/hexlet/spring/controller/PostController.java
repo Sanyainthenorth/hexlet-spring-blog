@@ -7,8 +7,10 @@ import io.hexlet.spring.dto.PostUpdateDTO;
 import io.hexlet.spring.exception.ResourceNotFoundException;
 import io.hexlet.spring.mapper.PostMapper;
 import io.hexlet.spring.model.Post;
+import io.hexlet.spring.model.Tag;
 import io.hexlet.spring.model.User;
 import io.hexlet.spring.repository.PostRepository;
+import io.hexlet.spring.repository.TagRepository;
 import io.hexlet.spring.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,90 +36,65 @@ public class PostController {
     private UserRepository userRepository;
 
     @Autowired
+    private TagRepository tagRepository;
+
+    @Autowired
     private PostMapper postMapper;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PostDTO> getPublishedPosts(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return postRepository.findByPublishedTrue(pageable)
-                             .getContent()
-                             .stream()
-                             .map(postMapper::toDTO)
-                             .collect(Collectors.toList());
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PostDTO createPost(@Valid @RequestBody PostCreateDTO postCreateDTO) {
-        User user = userRepository.findById(postCreateDTO.getUserId())
-                                  .orElseThrow(() -> new ResourceNotFoundException("User with id " + postCreateDTO.getUserId() + " not found"));
-
-        Post post = postMapper.toEntity(postCreateDTO);
-        post.setUser(user);
-        post.setCreatedAt(LocalDateTime.now());
-        post.setUpdatedAt(LocalDateTime.now());
-
-        Post savedPost = postRepository.save(post);
-        return postMapper.toDTO(savedPost);
+    public List<PostDTO> index() {
+        List<Post> posts = postRepository.findAll();
+        return postMapper.map(posts);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PostDTO getPost(@PathVariable Long id) {
-        return postRepository.findById(id)
-                             .map(postMapper::toDTO)
-                             .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
+    public PostDTO show(@PathVariable Long id) {
+        Post post = postRepository.findById(id)
+                                  .orElseThrow(() -> new ResourceNotFoundException("Post not found: " + id));
+        return postMapper.map(post);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PostDTO create(@Valid @RequestBody PostCreateDTO postData) {
+        Post post = postMapper.map(postData);
+
+        // Обработка тегов
+        if (postData.getTagIds() != null) {
+            List<Tag> tags = tagRepository.findAllById(postData.getTagIds());
+            post.setTags(tags);
+        }
+
+        post = postRepository.save(post);
+        return postMapper.map(post);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PostDTO updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateDTO postData) {
+    public PostDTO update(@PathVariable Long id, @Valid @RequestBody PostUpdateDTO postData) {
         Post post = postRepository.findById(id)
-                                  .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
+                                  .orElseThrow(() -> new ResourceNotFoundException("Post not found: " + id));
 
         postMapper.update(postData, post);
-        post.setUpdatedAt(LocalDateTime.now());
 
-        Post updatedPost = postRepository.save(post);
-        return postMapper.toDTO(updatedPost);
-    }
+        // Обновление тегов
+        if (postData.getTagIds() != null && postData.getTagIds().isPresent()) {
+            List<Tag> tags = tagRepository.findAllById(postData.getTagIds().get());
+            post.setTags(tags);
+        }
 
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public PostDTO patchPost(@PathVariable Long id, @Valid @RequestBody PostPatchDTO postData) {
-        Post post = postRepository.findById(id)
-                                  .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
-
-        postMapper.patch(postData, post);
-        post.setUpdatedAt(LocalDateTime.now());
-
-        Post patchedPost = postRepository.save(post);
-        return postMapper.toDTO(patchedPost);
+        post = postRepository.save(post);
+        return postMapper.map(post);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePost(@PathVariable Long id) {
-        if (!postRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Post with id " + id + " not found");
-        }
-        postRepository.deleteById(id);
-    }
-
-    @GetMapping("/user/{userId}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<PostDTO> getPostsByUser(@PathVariable Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("User with id " + userId + " not found");
-        }
-
-        return postRepository.findByUserId(userId).stream()
-                             .map(postMapper::toDTO)
-                             .collect(Collectors.toList());
+    public void delete(@PathVariable Long id) {
+        Post post = postRepository.findById(id)
+                                  .orElseThrow(() -> new ResourceNotFoundException("Post not found: " + id));
+        postRepository.delete(post);
     }
 }
 
