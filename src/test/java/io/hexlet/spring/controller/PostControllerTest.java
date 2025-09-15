@@ -56,7 +56,7 @@ public class PostControllerTest {
                .andExpect(jsonPath("$").isArray()) // ✅ Теперь просто массив, без content
                .andExpect(jsonPath("$.length()").value(1))
                .andExpect(jsonPath("$[0].title").value("Test Post"));
-    }// ✅ Обращаемся по индексу
+    }
 
     @Test
     public void testCreatePostSuccess() throws Exception {
@@ -84,7 +84,6 @@ public class PostControllerTest {
     public void testCreatePostWithInvalidData() throws Exception {
         User user = userRepository.findAll().get(0);
 
-        // Тест на слишком короткий контент (уберите published)
         var invalidPostJson = """
         {
           "title": "Test",
@@ -96,9 +95,8 @@ public class PostControllerTest {
                             .param("userId", user.getId().toString())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(invalidPostJson))
-               .andExpect(status().isUnprocessableEntity()); // Меняем на 422
+               .andExpect(status().isUnprocessableEntity());
 
-        // Тест на пустой заголовок (уберите published)
         var emptyTitleJson = """
         {
           "title": "",
@@ -143,8 +141,6 @@ public class PostControllerTest {
     @Test
     public void testUpdatePostSuccess() throws Exception {
         Post existingPost = postRepository.findAll().get(0);
-
-        // Уберите published, так как его нет в PostCreateDTO
         var updateJson = """
         {
           "title": "Updated Title",
@@ -157,7 +153,6 @@ public class PostControllerTest {
                             .content(updateJson))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$.title").value("Updated Title"))
-               // Уберите проверку на published, так как он не обновляется через DTO
                .andExpect(jsonPath("$.content").value("Updated content with enough characters"));
     }
 }

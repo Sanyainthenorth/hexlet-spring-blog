@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8b7163-ca71-496c-afb7-728e2c7dbb6b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/component/ModelGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/component/ModelGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/controller/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/PostCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/PostCreateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/PostDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/PostDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/PostUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/dto/PostUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/mapper/PostMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/mapper/PostMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/model/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/model/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/model/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/repository/PostRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/io/hexlet/spring/controller/PostControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/io/hexlet/spring/controller/PostControllerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +67,7 @@
     &quot;last_opened_file_path&quot;: &quot;/Users/alexandrayaitskaya/hexlet-spring-blog&quot;
   }
 }</component>
-  <component name="RunManager" selected="Gradle.PostControllerTest">
+  <component name="RunManager" selected="Gradle.UserControllerTest">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="io.hexlet.spring.Application" />
       <module name="hexlet-spring-blog.main" />
@@ -140,8 +131,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.PostControllerTest" />
         <item itemvalue="Gradle.UserControllerTest" />
+        <item itemvalue="Gradle.PostControllerTest" />
         <item itemvalue="Application.Application" />
       </list>
     </recent_temporary>
