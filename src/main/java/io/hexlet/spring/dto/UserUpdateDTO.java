@@ -22,4 +22,6 @@ public class UserUpdateDTO {
     @Email(message = "Email should be valid")
     private String email;
 
+    private String password;
+
 }

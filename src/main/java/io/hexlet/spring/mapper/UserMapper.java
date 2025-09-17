@@ -2,6 +2,7 @@ package io.hexlet.spring.mapper;
 
 import io.hexlet.spring.dto.UserPatchDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -24,6 +25,7 @@ public interface UserMapper {
 
     User toEntity(UserCreateDTO dto);
 
+    @Mapping(target = "passwordDigest", ignore = true)
     void update(UserUpdateDTO dto, @MappingTarget User user);
 
     void patch(UserPatchDTO dto, @MappingTarget User user);
