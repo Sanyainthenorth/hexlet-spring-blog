@@ -1,18 +1,17 @@
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-# Сначала копируем только файлы для сборки зависимостей
-COPY build.gradle.kts .    # <- Исправлено здесь
+# Copy build files first
+COPY build.gradle.kts .
 COPY gradlew .
 COPY gradle ./gradle
 
-# Копируем исходный код
+# Copy source code
 COPY src ./src
 
-# Даем права на выполнение gradlew
+# Make gradlew executable and build
 RUN chmod +x gradlew
-
-# Собираем проект
 RUN ./gradlew build
 
+# Run the application
 ENTRYPOINT ["java", "-jar", "build/libs/hexlet-spring-blog.jar", "--spring.profiles.active=production"]
