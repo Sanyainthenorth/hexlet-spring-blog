@@ -13,3 +13,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  web:
+    resources:
+      static-locations: classpath:/static/
+      add-mappings: true
+  mvc:
+    static-path-pattern: /**

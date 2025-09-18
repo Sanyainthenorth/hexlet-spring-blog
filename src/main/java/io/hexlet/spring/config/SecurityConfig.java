@@ -42,6 +42,15 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/{id}", "GET").permitAll() // Просмотр пользователя
                 .requestMatchers("/api/posts", "GET").permitAll() // Просмотр постов
                 .requestMatchers("/api/tags", "GET").permitAll() // Просмотр тегов
+                .requestMatchers(
+                    "/",
+                    "/about.html",
+                    "/css/**",
+                    "/js/**",
+                    "/img/**",
+                    "/static/**",
+                    "/webjars/**"
+                ).permitAll()
                 // Все остальные запросы требуют аутентификации
                 .anyRequest().authenticated())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

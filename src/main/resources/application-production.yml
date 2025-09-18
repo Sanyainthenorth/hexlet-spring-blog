@@ -3,9 +3,7 @@ spring:
     activate:
       on-profile: production
   datasource:
-    url: ${DB_URL}           # Автоматически подставится из переменных
-    username: ${DB_USERNAME} # окружения на Render
-    password: ${DB_PASSWORD}
+    url: ${JDBC_DATABASE_URL} # Используем одну переменную, где всё уже есть
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
