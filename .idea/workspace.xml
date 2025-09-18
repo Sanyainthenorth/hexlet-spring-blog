@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c8b7163-ca71-496c-afb7-728e2c7dbb6b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hexlet/spring/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-    </list>
+    <list default="true" id="2c8b7163-ca71-496c-afb7-728e2c7dbb6b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

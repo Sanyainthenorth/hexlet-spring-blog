@@ -1,11 +1,24 @@
+# src/main/resources/application-production.yml
 spring:
   config:
     activate:
       on-profile: production
+
   datasource:
-    url: ${JDBC_DATABASE_URL} # Используем одну переменную, где всё уже есть
+    url: jdbc:postgresql://dpg-d2dltl15pdvs73f1osn0-a:5432/myapp_db_ky4i
+    username: myapp_db_ky4i_user
+    password: Tz7dCoSJxZKF49GGrYd7Lzu5qTS9FkKz
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
-      ddl-auto: validate
-    show-sql: false
+      ddl-auto: validate # В продакшене важно использовать validate!
+    show-sql: false # Отключаем логирование SQL в продакшене
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  # Отключаем консоль H2 в продакшене (она не нужна)
+  h2:
+    console:
+      enabled: false
+
+# Остальные настройки (rsa, app) наследуются из application.yml

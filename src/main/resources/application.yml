@@ -1,21 +1,39 @@
+# src/main/resources/application.yml
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem
 app:
   welcome-message: "Добро пожаловать в Hexlet Spring Blog!"
+
 spring:
   datasource:
+    url: jdbc:h2:mem:testdb # URL для H2 в памяти
     driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create-drop # Или update для разработки
+    show-sql: true # Показывать SQL в консоли - удобно для отладки
     properties:
       hibernate:
-        format_sql: true
+        format_sql: true # Форматировать SQL для читаемости
+    database-platform: org.hibernate.dialect.H2Dialect
+  
+  h2:
+    console:
+      enabled: true # Включить консоль H2 (http://localhost:8080/h2-console)
+      path: /h2-console
+  
   web:
     resources:
       static-locations: classpath:/static/
       add-mappings: true
   mvc:
     static-path-pattern: /**
+
+# Настройка профиля по умолчанию (опционально)
+# spring:
+#   profiles:
+#     active: dev
