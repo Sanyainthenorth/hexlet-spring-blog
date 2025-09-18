@@ -5,20 +5,17 @@ spring:
       on-profile: production
 
   datasource:
-    url: jdbc:postgresql://dpg-d2dltl15pdvs73f1osn0-a:5432/myapp_db_ky4i
-    username: myapp_db_ky4i_user
-    password: Tz7dCoSJxZKF49GGrYd7Lzu5qTS9FkKz
+    url: jdbc:postgresql://dpg-d35vrpqli9vc738puktg-a:5432/hexlet-spring-blog-db
+    username: hexlet_spring_blog_db_user
+    password: hGSHrVl0jKrRLtM2e9NZX6Rvvio12t75
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: validate # В продакшене важно использовать validate!
-    show-sql: false # Отключаем логирование SQL в продакшене
+      ddl-auto: validate
+    show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-  # Отключаем консоль H2 в продакшене (она не нужна)
   h2:
     console:
       enabled: false
-
-# Остальные настройки (rsa, app) наследуются из application.yml
