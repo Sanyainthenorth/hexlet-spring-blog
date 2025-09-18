@@ -86,7 +86,7 @@ public class PostControllerTest {
                .andExpect(jsonPath("$").isArray())
                .andExpect(jsonPath("$[0].title").value("Test Post"));
     }
-    
+
 
     @Test
     void createPost_WithInvalidData_ShouldReturnUnprocessableEntity() throws Exception {

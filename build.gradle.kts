@@ -43,6 +43,14 @@ dependencies {
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
     testImplementation ("com.jayway.jsonpath:json-path:2.7.0")
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation ("org.springframework.boot:spring-boot-starter-web")
+
+    // Базы данных
+    runtimeOnly ("com.h2database:h2")
+    runtimeOnly ("org.postgresql:postgresql")
+
+    testImplementation ("org.springframework.boot:spring-boot-starter-test")
 
 }
 sonarqube {
@@ -75,4 +83,8 @@ tasks.jacocoTestReport {
 
 tasks.check {
     dependsOn(tasks.jacocoTestReport)
+}
+tasks.bootJar {
+    archiveFileName.set("hexlet-spring-blog.jar")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
